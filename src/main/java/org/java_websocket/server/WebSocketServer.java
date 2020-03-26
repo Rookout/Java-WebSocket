@@ -54,6 +54,7 @@ import org.java_websocket.handshake.ClientHandshake;
 import org.java_websocket.handshake.Handshakedata;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.slf4j.helpers.NOPLogger;
 
 /**
  * <tt>WebSocketServer</tt> is an abstract class that only takes care of the
@@ -70,7 +71,7 @@ public abstract class WebSocketServer extends AbstractWebSocket implements Runna
 	 *
 	 * @since 1.4.0
 	 */
-	private final Logger log = LoggerFactory.getLogger(WebSocketServer.class);
+	private final Logger log = NOPLogger.NOP_LOGGER;
 
 	/**
 	 * Holds the list of active WebSocket connections. "Active" means WebSocket

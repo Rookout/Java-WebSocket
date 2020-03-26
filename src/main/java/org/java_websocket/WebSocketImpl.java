@@ -51,6 +51,7 @@ import java.util.concurrent.LinkedBlockingQueue;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.slf4j.helpers.NOPLogger;
 
 import javax.net.ssl.SSLSession;
 
@@ -85,7 +86,7 @@ public class WebSocketImpl implements WebSocket {
 	 *
 	 * @since 1.4.0
 	 */
-	private final Logger log = LoggerFactory.getLogger(WebSocketImpl.class);
+	private final Logger log = NOPLogger.NOP_LOGGER;
 
 	/**
 	 * Queue of buffers that need to be sent to the client.

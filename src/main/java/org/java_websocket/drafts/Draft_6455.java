@@ -37,6 +37,8 @@ import org.java_websocket.util.*;
 import org.java_websocket.util.Base64;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.slf4j.helpers.NOPLogger;
+import org.slf4j.helpers.NOPLoggerFactory;
 
 import java.math.BigInteger;
 import java.nio.ByteBuffer;
@@ -86,7 +88,7 @@ public class Draft_6455 extends Draft {
 	 *
 	 * @since 1.4.0
 	 */
-	private final Logger log = LoggerFactory.getLogger(Draft_6455.class);
+	private final Logger log = NOPLogger.NOP_LOGGER;
 
 	/**
 	 * Attribute for the used extension in this draft
