@@ -154,12 +154,16 @@ public class AutobahnClientTest extends WebSocketClient {
 
 	@Override
 	public void onMessage( String message ) {
-		send( message );
+		try {
+			send( message );
+		} catch (InterruptedException e) { }
 	}
 
 	@Override
 	public void onMessage( ByteBuffer blob ) {
-		getConnection().send( blob );
+		try {
+			getConnection().send( blob );
+		} catch (InterruptedException e) { }
 	}
 
 	@Override

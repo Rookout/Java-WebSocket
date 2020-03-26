@@ -82,12 +82,18 @@ public class AutobahnSSLServerTest extends WebSocketServer {
 
 	@Override
 	public void onMessage( WebSocket conn, String message ) {
-		conn.send( message );
+		try {
+			conn.send(message);
+		} catch (InterruptedException e) {}
 	}
 
 	@Override
 	public void onMessage( WebSocket conn, ByteBuffer blob ) {
-		conn.send( blob );
+		try {
+			conn.send( blob );
+		} catch (InterruptedException e) {
+
+		}
 	}
 
 	public static void main( String[] args ) throws UnknownHostException {

@@ -70,7 +70,10 @@ public class Issue732Test {
                     this.reconnect();
                     Assert.fail("Exception should be thrown");
                 } catch (IllegalStateException e) {
-                    send("hi");
+                    try {
+                        send("hi");
+                    } catch (InterruptedException ex) {
+                    }
                 }
             }
 
@@ -97,7 +100,10 @@ public class Issue732Test {
         WebSocketServer server = new WebSocketServer(new InetSocketAddress(port)) {
             @Override
             public void onOpen(WebSocket conn, ClientHandshake handshake) {
-                conn.send("hi");
+                try {
+                    conn.send("hi");
+                } catch (InterruptedException e) {
+                }
             }
 
             @Override

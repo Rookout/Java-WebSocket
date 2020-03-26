@@ -75,7 +75,11 @@ public abstract class WebSocketAdapter implements WebSocketListener {
 	 */
 	@Override
 	public void onWebsocketPing( WebSocket conn, Framedata f ) {
-		conn.sendFrame( new PongFrame( (PingFrame)f ) );
+		try {
+			conn.sendFrame( new PongFrame( (PingFrame)f ) );
+		} catch (InterruptedException e) {
+			// We're shutting down, so it's safe to ignore
+		}
 	}
 
 	/**

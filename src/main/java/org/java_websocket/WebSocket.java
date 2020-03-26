@@ -71,7 +71,7 @@ public interface WebSocket {
 	 * @param text the text data to send
 	 * @throws WebsocketNotConnectedException websocket is not yet connected
 	 */
-	void send( String text );
+	void send( String text ) throws InterruptedException;
 
 	/**
 	 * Send Binary data (plain bytes) to the other end.
@@ -80,7 +80,7 @@ public interface WebSocket {
 	 * @throws IllegalArgumentException the data is null
 	 * @throws WebsocketNotConnectedException websocket is not yet connected
 	 */
-	void send( ByteBuffer bytes );
+	void send( ByteBuffer bytes ) throws InterruptedException;
 
 	/**
 	 * Send Binary data (plain bytes) to the other end.
@@ -89,25 +89,25 @@ public interface WebSocket {
 	 * @throws IllegalArgumentException the data is null
 	 * @throws WebsocketNotConnectedException websocket is not yet connected
 	 */
-	void send( byte[] bytes );
+	void send( byte[] bytes ) throws InterruptedException;
 
 	/**
 	 * Send a frame to the other end
 	 * @param framedata the frame to send to the other end
 	 */
-	void sendFrame( Framedata framedata );
+	void sendFrame( Framedata framedata ) throws InterruptedException;
 
 	/**
 	 * Send a collection of frames to the other end
 	 * @param frames the frames to send to the other end
 	 */
-	void sendFrame( Collection<Framedata> frames );
+	void sendFrame( Collection<Framedata> frames ) throws InterruptedException;
 
 	/**
 	 * Send a ping to the other end
 	 * @throws WebsocketNotConnectedException websocket is not yet connected
 	 */
-	void sendPing();
+	void sendPing() throws InterruptedException;
 
 	/**
 	 * Allows to send continuous/fragmented frames conveniently. <br>
@@ -122,7 +122,7 @@ public interface WebSocket {
 	 * @param fin
 	 *            true means the current frame is the last in the sequence.
 	 **/
-	void sendFragmentedFrame( Opcode op, ByteBuffer buffer, boolean fin );
+	void sendFragmentedFrame( Opcode op, ByteBuffer buffer, boolean fin ) throws InterruptedException;
 
 	/**
 	 * Checks if the websocket has buffered data

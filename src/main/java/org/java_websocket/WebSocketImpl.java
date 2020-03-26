@@ -192,10 +192,28 @@ public class WebSocketImpl implements WebSocket {
 	 * @param draft    The draft which should be used
 	 */
 	public WebSocketImpl( WebSocketListener listener, Draft draft ) {
+		this(listener, draft, 0, 0);
+	}
+
+	/**
+	 * creates a websocket with client role
+	 *
+	 * @param listener The listener for this instance
+	 * @param draft    The draft which should be used
+	 */
+	public WebSocketImpl( WebSocketListener listener, Draft draft, int inQueueSize, int outQueueSize ) {
 		if( listener == null || ( draft == null && role == Role.SERVER ) )// socket can be null because we want do be able to create the object without already having a bound channel
 			throw new IllegalArgumentException( "parameters must not be null" );
-		this.outQueue = new LinkedBlockingQueue<ByteBuffer>();
-		inQueue = new LinkedBlockingQueue<ByteBuffer>();
+		if (outQueueSize > 0) {
+			this.outQueue = new LinkedBlockingQueue<ByteBuffer>(outQueueSize);
+		} else {
+			this.outQueue = new LinkedBlockingQueue<ByteBuffer>();
+		}
+		if (inQueueSize > 0) {
+			this.inQueue = new LinkedBlockingQueue<ByteBuffer>(inQueueSize);
+		} else {
+			this.inQueue = new LinkedBlockingQueue<ByteBuffer>();
+		}
 		this.wsl = listener;
 		this.role = Role.CLIENT;
 		if( draft != null )
@@ -281,7 +299,11 @@ public class WebSocketImpl implements WebSocket {
 										closeConnectionDueToInternalServerError( e );
 										return false;
 									}
-									write( d.createHandshake( d.postProcessHandshakeResponseAsServer( handshake, response ) ) );
+									try {
+										write(d.createHandshake(d.postProcessHandshakeResponseAsServer(handshake, response)));
+									} catch (InterruptedException e) {
+										return false;
+									}
 									draft = d;
 									open( handshake );
 									return true;
@@ -397,8 +419,12 @@ public class WebSocketImpl implements WebSocket {
 	 * @param exception the InvalidDataException causing this problem
 	 */
 	private void closeConnectionDueToWrongHandshake( InvalidDataException exception ) {
-		write( generateHttpResponseDueToError( 404 ) );
-		flushAndClose( exception.getCloseCode(), exception.getMessage(), false );
+		try {
+			write(generateHttpResponseDueToError(404));
+		} catch (InterruptedException e) {
+			// We're shutting down, ignore the error
+		}
+		flushAndClose(exception.getCloseCode(), exception.getMessage(), false);
 	}
 
 	/**
@@ -407,7 +433,11 @@ public class WebSocketImpl implements WebSocket {
 	 * @param exception the RuntimeException causing this problem
 	 */
 	private void closeConnectionDueToInternalServerError( RuntimeException exception ) {
-		write( generateHttpResponseDueToError( 500 ) );
+		try {
+			write(generateHttpResponseDueToError(500));
+		} catch (InterruptedException e) {
+			// We're shutting down, ignore the error
+		}
 		flushAndClose( CloseFrame.NEVER_CONNECTED, exception.getMessage(), false );
 	}
 
@@ -453,7 +483,12 @@ public class WebSocketImpl implements WebSocket {
 							closeFrame.setReason( message );
 							closeFrame.setCode( code );
 							closeFrame.isValid();
-							sendFrame( closeFrame );
+							try {
+								sendFrame(closeFrame);
+							} catch (InterruptedException e) {
+								// We're shutting down, it's ok to ignore
+								return;
+							}
 						}
 					} catch ( InvalidDataException e ) {
 						log.error("generated frame is invalid", e);
@@ -599,7 +634,7 @@ public class WebSocketImpl implements WebSocket {
 	 * @throws WebsocketNotConnectedException websocket is not yet connected
 	 */
 	@Override
-	public void send( String text ) {
+	public void send( String text ) throws InterruptedException {
 		if( text == null )
 			throw new IllegalArgumentException( "Cannot send 'null' data to a WebSocketImpl." );
 		send( draft.createFrames( text, role == Role.CLIENT ) );
@@ -612,18 +647,18 @@ public class WebSocketImpl implements WebSocket {
 	 * @throws WebsocketNotConnectedException websocket is not yet connected
 	 */
 	@Override
-	public void send( ByteBuffer bytes ) {
+	public void send( ByteBuffer bytes ) throws InterruptedException {
 		if( bytes == null )
 			throw new IllegalArgumentException( "Cannot send 'null' data to a WebSocketImpl." );
 		send( draft.createFrames( bytes, role == Role.CLIENT ) );
 	}
 
 	@Override
-	public void send( byte[] bytes ) {
+	public void send( byte[] bytes ) throws InterruptedException {
 		send( ByteBuffer.wrap( bytes ) );
 	}
 
-	private void send( Collection<Framedata> frames ) {
+	private void send( Collection<Framedata> frames ) throws InterruptedException {
 		if( !isOpen() ) {
 			throw new WebsocketNotConnectedException();
 		}
@@ -639,21 +674,21 @@ public class WebSocketImpl implements WebSocket {
 	}
 
 	@Override
-	public void sendFragmentedFrame(Opcode op, ByteBuffer buffer, boolean fin ) {
+	public void sendFragmentedFrame(Opcode op, ByteBuffer buffer, boolean fin ) throws InterruptedException {
 		send( draft.continuousFrame( op, buffer, fin ) );
 	}
 
 	@Override
-	public void sendFrame( Collection<Framedata> frames ) {
+	public void sendFrame( Collection<Framedata> frames ) throws InterruptedException {
 		send( frames );
 	}
 
 	@Override
-	public void sendFrame( Framedata framedata ) {
+	public void sendFrame( Framedata framedata ) throws InterruptedException {
 		send( Collections.singletonList( framedata ) );
 	}
 
-	public void sendPing() throws NullPointerException {
+	public void sendPing() throws NullPointerException, InterruptedException {
 		// Gets a PingFrame from WebSocketListener(wsl) and sends it.
 		PingFrame pingFrame = wsl.onPreparePing(this);
 		if(pingFrame == null)
@@ -666,7 +701,7 @@ public class WebSocketImpl implements WebSocket {
 		return !this.outQueue.isEmpty();
 	}
 
-	public void startHandshake( ClientHandshakeBuilder handshakedata ) throws InvalidHandshakeException {
+	public void startHandshake( ClientHandshakeBuilder handshakedata ) throws InvalidHandshakeException, InterruptedException {
 		// Store the Handshake Request we are about to send
 		this.handshakerequest = draft.postProcessHandshakeRequestAsClient( handshakedata );
 
@@ -689,10 +724,10 @@ public class WebSocketImpl implements WebSocket {
 		write( draft.createHandshake( this.handshakerequest ) );
 	}
 
-	private void write( ByteBuffer buf ) {
+	private void write( ByteBuffer buf ) throws InterruptedException {
 		log.trace( "write({}): {}", buf.remaining(), buf.remaining() > 1000 ? "too big to display" : new String( buf.array() ));
 
-		outQueue.add( buf );
+		outQueue.put( buf );
 		wsl.onWriteDemand( this );
 	}
 
@@ -701,7 +736,7 @@ public class WebSocketImpl implements WebSocket {
 	 *
 	 * @param bufs the list of bytebuffer
 	 */
-	private void write( List<ByteBuffer> bufs ) {
+	private void write( List<ByteBuffer> bufs ) throws InterruptedException {
 		synchronized(synchronizeWriteObject) {
 			for( ByteBuffer b : bufs ) {
 				write( b );

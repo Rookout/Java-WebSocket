@@ -221,6 +221,39 @@ public abstract class WebSocketClient extends AbstractWebSocket implements Runna
 	}
 
 	/**
+	 * Constructs a WebSocketClient instance and sets it to the connect to the
+	 * specified URI. The channel does not attampt to connect automatically. The connection
+	 * will be established once you call <var>connect</var>.
+	 * @param serverUri the server URI to connect to
+	 * @param protocolDraft The draft which should be used for this connection
+	 * @param httpHeaders Additional HTTP-Headers
+	 * @param connectTimeout The Timeout for the connection
+	 */
+	public WebSocketClient( URI serverUri , Draft protocolDraft , Map<String,String> httpHeaders , int connectTimeout, int inQueueLimit, int outQueueLimit ) {
+		if( serverUri == null ) {
+			throw new IllegalArgumentException();
+		} else if( protocolDraft == null ) {
+			throw new IllegalArgumentException( "null as draft is permitted for `WebSocketServer` only!" );
+		}
+		this.uri = serverUri;
+		this.draft = protocolDraft;
+		this.dnsResolver = new DnsResolver() {
+			@Override
+			public InetAddress resolve(URI uri) throws UnknownHostException {
+				return InetAddress.getByName(uri.getHost());
+			}
+		};
+		if(httpHeaders != null) {
+			headers = new TreeMap<String, String>(String.CASE_INSENSITIVE_ORDER);
+			headers.putAll(httpHeaders);
+		}
+		this.connectTimeout = connectTimeout;
+		setTcpNoDelay( false );
+		setReuseAddr( false );
+		this.engine = new WebSocketImpl( this, protocolDraft, inQueueLimit, outQueueLimit );
+	}
+
+	/**
 	 * Returns the URI that this WebSocketClient is connected to.
 	 * @return the URI connected to
 	 */
@@ -406,7 +439,7 @@ public abstract class WebSocketClient extends AbstractWebSocket implements Runna
 	 * @param text
 	 *            The string which will be transmitted.
 	 */
-	public void send( String text ) {
+	public void send( String text ) throws InterruptedException {
 		engine.send( text );
 	}
 
@@ -416,7 +449,7 @@ public abstract class WebSocketClient extends AbstractWebSocket implements Runna
 	 * @param data
 	 *            The byte-Array of data to send to the WebSocket server.
 	 */
-	public void send( byte[] data ) {
+	public void send( byte[] data ) throws InterruptedException {
 		engine.send( data );
 	}
 
@@ -436,7 +469,7 @@ public abstract class WebSocketClient extends AbstractWebSocket implements Runna
 	}
 
 	@Override
-	public void sendPing() {
+	public void sendPing() throws InterruptedException {
 		engine.sendPing( );
 	}
 
@@ -534,7 +567,7 @@ public abstract class WebSocketClient extends AbstractWebSocket implements Runna
 	 * Create and send the handshake to the other endpoint
 	 * @throws InvalidHandshakeException  a invalid handshake was created
 	 */
-	private void sendHandshake() throws InvalidHandshakeException {
+	private void sendHandshake() throws InvalidHandshakeException, InterruptedException {
 		String path;
 		String part1 = uri.getRawPath();
 		String part2 = uri.getRawQuery();
@@ -813,7 +846,7 @@ public abstract class WebSocketClient extends AbstractWebSocket implements Runna
 	}
 
 	@Override
-	public void sendFragmentedFrame(Opcode op, ByteBuffer buffer, boolean fin ) {
+	public void sendFragmentedFrame(Opcode op, ByteBuffer buffer, boolean fin ) throws InterruptedException {
 		engine.sendFragmentedFrame( op, buffer, fin );
 	}
 
@@ -858,17 +891,17 @@ public abstract class WebSocketClient extends AbstractWebSocket implements Runna
 	}
 
 	@Override
-	public void send( ByteBuffer bytes ) {
+	public void send( ByteBuffer bytes ) throws InterruptedException {
 		engine.send( bytes );
 	}
 
 	@Override
-	public void sendFrame( Framedata framedata ) {
+	public void sendFrame( Framedata framedata ) throws InterruptedException {
 		engine.sendFrame( framedata );
 	}
 
 	@Override
-	public void sendFrame( Collection<Framedata> frames ) {
+	public void sendFrame( Collection<Framedata> frames ) throws InterruptedException {
 		engine.sendFrame( frames );
 	}
 

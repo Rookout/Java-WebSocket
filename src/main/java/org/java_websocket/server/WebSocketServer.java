@@ -942,6 +942,9 @@ public abstract class WebSocketServer extends AbstractWebSocket implements Runna
 					client.sendFrame(draftFrames.get(draft));
 				} catch (WebsocketNotConnectedException e) {
 					//Ignore this exception in this case
+				} catch (InterruptedException e) {
+					// We're shutting down, so stop.
+					return;
 				}
 			}
 		}

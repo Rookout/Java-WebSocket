@@ -78,7 +78,10 @@ public class Issue256Test {
 
 			@Override
 			public void onMessage( WebSocket conn, String message ) {
-				conn.send( message );
+				try {
+					conn.send( message );
+				} catch (InterruptedException e) {
+				}
 			}
 
 			@Override
