@@ -155,6 +155,17 @@ public abstract class WebSocketClient extends AbstractWebSocket implements Runna
 	 * Constructs a WebSocketClient instance and sets it to the connect to the
 	 * specified URI. The channel does not attampt to connect automatically. The connection
 	 * will be established once you call <var>connect</var>.
+	 *
+	 * @param serverUri the server URI to connect to
+	 */
+	public WebSocketClient( URI serverUri, int connectTimeout, int inQueueLimit, int outQueueLimit ) {
+		this( serverUri, new Draft_6455(), null, connectTimeout, inQueueLimit, outQueueLimit);
+	}
+
+	/**
+	 * Constructs a WebSocketClient instance and sets it to the connect to the
+	 * specified URI. The channel does not attampt to connect automatically. The connection
+	 * will be established once you call <var>connect</var>.
 	 * @param serverUri the server URI to connect to
 	 * @param protocolDraft The draft which should be used for this connection
 	 */
@@ -197,27 +208,7 @@ public abstract class WebSocketClient extends AbstractWebSocket implements Runna
 	 * @param connectTimeout The Timeout for the connection
 	 */
 	public WebSocketClient( URI serverUri , Draft protocolDraft , Map<String,String> httpHeaders , int connectTimeout ) {
-		if( serverUri == null ) {
-			throw new IllegalArgumentException();
-		} else if( protocolDraft == null ) {
-			throw new IllegalArgumentException( "null as draft is permitted for `WebSocketServer` only!" );
-		}
-		this.uri = serverUri;
-		this.draft = protocolDraft;
-		this.dnsResolver = new DnsResolver() {
-			@Override
-			public InetAddress resolve(URI uri) throws UnknownHostException {
-				return InetAddress.getByName(uri.getHost());
-			}
-		};
-		if(httpHeaders != null) {
-			headers = new TreeMap<String, String>(String.CASE_INSENSITIVE_ORDER);
-			headers.putAll(httpHeaders);
-		}
-		this.connectTimeout = connectTimeout;
-		setTcpNoDelay( false );
-		setReuseAddr( false );
-		this.engine = new WebSocketImpl( this, protocolDraft );
+		this(serverUri, protocolDraft, httpHeaders, connectTimeout, 0, 0);
 	}
 
 	/**
