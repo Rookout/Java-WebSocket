@@ -132,6 +132,10 @@ public abstract class WebSocketClient extends AbstractWebSocket implements Runna
 	 */
 	private int connectTimeout = 0;
 
+	private int inQueueLimit = 0;
+
+	private int outQueueLimit = 0;
+
 	/**
 	 * DNS resolver that translates a URI to an InetAddress
 	 *
@@ -239,9 +243,11 @@ public abstract class WebSocketClient extends AbstractWebSocket implements Runna
 			headers.putAll(httpHeaders);
 		}
 		this.connectTimeout = connectTimeout;
+		this.inQueueLimit = inQueueLimit;
+		this.outQueueLimit = outQueueLimit;
 		setTcpNoDelay( false );
 		setReuseAddr( false );
-		this.engine = new WebSocketImpl( this, protocolDraft, inQueueLimit, outQueueLimit );
+		this.engine = new WebSocketImpl( this, protocolDraft, this.inQueueLimit, this.outQueueLimit );
 	}
 
 	/**
@@ -367,7 +373,7 @@ public abstract class WebSocketClient extends AbstractWebSocket implements Runna
 		}
 		connectLatch = new CountDownLatch( 1 );
 		closeLatch = new CountDownLatch( 1 );
-		this.engine = new WebSocketImpl( this, this.draft );
+		this.engine = new WebSocketImpl( this, this.draft, this.inQueueLimit, this.outQueueLimit );
 	}
 
 	/**
