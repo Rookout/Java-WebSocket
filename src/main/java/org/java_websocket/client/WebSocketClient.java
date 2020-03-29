@@ -780,7 +780,6 @@ public abstract class WebSocketClient extends AbstractWebSocket implements Runna
 			try {
 				while( !Thread.interrupted() ) {
 					ByteBuffer buffer = engine.outQueue.take();
-					System.out.println("Got message, writing it to outstream");
 					ostream.write( buffer.array(), 0, buffer.limit() );
 					ostream.flush();
 				}
