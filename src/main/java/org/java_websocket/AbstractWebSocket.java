@@ -186,9 +186,11 @@ public abstract class AbstractWebSocket extends WebSocketAdapter {
 					connections.addAll( getConnections() );
 					long minimumPongTime = (long) (System.nanoTime() - ( connectionLostTimeout * 1.5 ));
 					for( WebSocket conn : connections ) {
+						System.out.println("Starting connection lost detection");
 						executeConnectionLostDetection(conn, minimumPongTime);
 					}
 				} catch ( Exception e ) {
+					System.out.println("Unhandled exception");
 					//Ignore this exception
 				}
 				connections.clear();
@@ -214,6 +216,7 @@ public abstract class AbstractWebSocket extends WebSocketAdapter {
 		} else {
 			if( webSocketImpl.isOpen() ) {
 				try {
+					System.out.println("Sending ping");
 					webSocketImpl.sendPing();
 				} catch (InterruptedException e) {
 					return;
