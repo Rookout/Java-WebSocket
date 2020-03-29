@@ -279,7 +279,7 @@ public class WebSocketImpl implements WebSocket {
 								socketBuffer.reset();
 								Handshakedata tmphandshake = d.translateHandshake( socketBuffer );
 								if( !( tmphandshake instanceof ClientHandshake ) ) {
-									log.trace("Closing due to wrong handshake");
+									System.out.printf("Closing due to wrong handshake\n");
 									closeConnectionDueToWrongHandshake( new InvalidDataException( CloseFrame.PROTOCOL_ERROR, "wrong http function" ) );
 									return false;
 								}
@@ -291,7 +291,7 @@ public class WebSocketImpl implements WebSocket {
 									try {
 										response = wsl.onWebsocketHandshakeReceivedAsServer( this, d, handshake );
 									} catch ( InvalidDataException e ) {
-										log.trace("Closing due to wrong handshake. Possible handshake rejection", e);
+										System.out.printf("Closing due to wrong handshake. Possible handshake rejection\n", e);
 										closeConnectionDueToWrongHandshake( e );
 										return false;
 									} catch ( RuntimeException e ) {
@@ -314,7 +314,7 @@ public class WebSocketImpl implements WebSocket {
 							}
 						}
 						if( draft == null ) {
-							log.trace("Closing due to protocol error: no draft matches");
+							System.out.printf("Closing due to protocol error: no draft matches\n");
 							closeConnectionDueToWrongHandshake( new InvalidDataException( CloseFrame.PROTOCOL_ERROR, "no draft matches" ) );
 						}
 						return false;
@@ -322,7 +322,7 @@ public class WebSocketImpl implements WebSocket {
 						// special case for multiple step handshakes
 						Handshakedata tmphandshake = draft.translateHandshake( socketBuffer );
 						if( !( tmphandshake instanceof ClientHandshake ) ) {
-							log.trace("Closing due to protocol error: wrong http function");
+							System.out.printf("Closing due to protocol error: wrong http function\n");
 							flushAndClose( CloseFrame.PROTOCOL_ERROR, "wrong http function", false );
 							return false;
 						}
@@ -333,7 +333,7 @@ public class WebSocketImpl implements WebSocket {
 							open( handshake );
 							return true;
 						} else {
-							log.trace("Closing due to protocol error: the handshake did finally not match");
+							System.out.printf("Closing due to protocol error: the handshake did finally not match\n");
 							close( CloseFrame.PROTOCOL_ERROR, "the handshake did finally not match" );
 						}
 						return false;
@@ -342,7 +342,7 @@ public class WebSocketImpl implements WebSocket {
 					draft.setParseMode( role );
 					Handshakedata tmphandshake = draft.translateHandshake( socketBuffer );
 					if( !( tmphandshake instanceof ServerHandshake ) ) {
-						log.trace("Closing due to protocol error: wrong http function");
+						System.out.printf("Closing due to protocol error: wrong http function\n");
 						flushAndClose( CloseFrame.PROTOCOL_ERROR, "wrong http function", false );
 						return false;
 					}
@@ -352,7 +352,7 @@ public class WebSocketImpl implements WebSocket {
 						try {
 							wsl.onWebsocketHandshakeReceivedAsClient( this, handshakerequest, handshake );
 						} catch ( InvalidDataException e ) {
-							log.trace("Closing due to invalid data exception. Possible handshake rejection", e);
+							System.out.printf("Closing due to invalid data exception. Possible handshake rejection\n", e);
 							flushAndClose( e.getCloseCode(), e.getMessage(), false );
 							return false;
 						} catch ( RuntimeException e ) {
@@ -364,12 +364,12 @@ public class WebSocketImpl implements WebSocket {
 						open( handshake );
 						return true;
 					} else {
-						log.trace("Closing due to protocol error: draft {} refuses handshake", draft );
+						System.out.printf("Closing due to protocol error: draft {} refuses handshake\n", draft );
 						close( CloseFrame.PROTOCOL_ERROR, "draft " + draft + " refuses handshake" );
 					}
 				}
 			} catch ( InvalidHandshakeException e ) {
-				log.trace("Closing due to invalid handshake", e);
+				System.out.printf("Closing due to invalid handshake\n", e);
 				close( e );
 			}
 		} catch ( IncompleteHandshakeException e ) {

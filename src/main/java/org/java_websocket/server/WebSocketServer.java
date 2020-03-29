@@ -694,7 +694,7 @@ public abstract class WebSocketServer extends AbstractWebSocket implements Runna
 				removed = this.connections.remove( ws );
 			} else {
 				//Don't throw an assert error if the ws is not in the list. e.g. when the other endpoint did not send any handshake. see #512
-				log.trace("Removing connection which is not in the connections collection! Possible no handshake recieved! {}", ws);
+				System.out.printf("Removing connection which is not in the connections collection! Possible no handshake recieved! {}\n", ws);
 			}
 		}
 		if( isclosed.get() && connections.isEmpty() ) {

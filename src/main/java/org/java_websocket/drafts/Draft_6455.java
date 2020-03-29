@@ -224,7 +224,7 @@ public class Draft_6455 extends Draft {
 	public HandshakeState acceptHandshakeAsServer( ClientHandshake handshakedata ) throws InvalidHandshakeException {
 		int v = readVersion( handshakedata );
 		if( v != 13 ) {
-			log.trace("acceptHandshakeAsServer - Wrong websocket version.");
+			System.out.printf("acceptHandshakeAsServer - Wrong websocket version.\n");
 			return HandshakeState.NOT_MATCHED;
 		}
 		HandshakeState extensionState = HandshakeState.NOT_MATCHED;
@@ -233,7 +233,7 @@ public class Draft_6455 extends Draft {
             if( knownExtension.acceptProvidedExtensionAsServer( requestedExtension ) ) {
                 extension = knownExtension;
                 extensionState = HandshakeState.MATCHED;
-                log.trace("acceptHandshakeAsServer - Matching extension found: {}", extension);
+                System.out.printf("acceptHandshakeAsServer - Matching extension found: {}\n", extension);
                 break;
             }
         }
@@ -241,7 +241,7 @@ public class Draft_6455 extends Draft {
 		if (protocolState == HandshakeState.MATCHED && extensionState == HandshakeState.MATCHED) {
 			return HandshakeState.MATCHED;
 		}
-		log.trace("acceptHandshakeAsServer - No matching extension or protocol found.");
+		System.out.printf("acceptHandshakeAsServer - No matching extension or protocol found.\n");
 		return HandshakeState.NOT_MATCHED;
 	}
 
@@ -254,7 +254,7 @@ public class Draft_6455 extends Draft {
 		for( IProtocol knownProtocol : knownProtocols ) {
 			if( knownProtocol.acceptProvidedProtocol( requestedProtocol ) ) {
 				protocol = knownProtocol;
-				log.trace("acceptHandshake - Matching protocol found: {}", protocol);
+				System.out.printf("acceptHandshake - Matching protocol found: {}\n", protocol);
 				return HandshakeState.MATCHED;
 			}
 		}
@@ -264,11 +264,11 @@ public class Draft_6455 extends Draft {
 	@Override
 	public HandshakeState acceptHandshakeAsClient( ClientHandshake request, ServerHandshake response ) throws InvalidHandshakeException {
 		if (! basicAccept( response )) {
-			log.trace("acceptHandshakeAsClient - Missing/wrong upgrade or connection in handshake.");
+			System.out.printf("acceptHandshakeAsClient - Missing/wrong upgrade or connection in handshake.\n");
 			return HandshakeState.NOT_MATCHED;
 		}
 		if( !request.hasFieldValue( SEC_WEB_SOCKET_KEY ) || !response.hasFieldValue( SEC_WEB_SOCKET_ACCEPT ) ) {
-			log.trace("acceptHandshakeAsClient - Missing Sec-WebSocket-Key or Sec-WebSocket-Accept");
+			System.out.printf("acceptHandshakeAsClient - Missing Sec-WebSocket-Key or Sec-WebSocket-Accept\n");
 			return HandshakeState.NOT_MATCHED;
 		}
 
@@ -277,7 +277,7 @@ public class Draft_6455 extends Draft {
 		seckeyChallenge = generateFinalKey( seckeyChallenge );
 
 		if( !seckeyChallenge.equals( seckeyAnswer ) ) {
-			log.trace("acceptHandshakeAsClient - Wrong key for Sec-WebSocket-Key.");
+			System.out.printf("acceptHandshakeAsClient - Wrong key for Sec-WebSocket-Key.\n");
 			return HandshakeState.NOT_MATCHED;
 		}
 		HandshakeState extensionState = HandshakeState.NOT_MATCHED;
@@ -294,7 +294,7 @@ public class Draft_6455 extends Draft {
 		if (protocolState == HandshakeState.MATCHED && extensionState == HandshakeState.MATCHED) {
 			return HandshakeState.MATCHED;
 		}
-		log.trace("acceptHandshakeAsClient - No matching extension or protocol found.");
+		System.out.printf("acceptHandshakeAsClient - No matching extension or protocol found.\n");
 		return HandshakeState.NOT_MATCHED;
 	}
 
@@ -561,7 +561,7 @@ public class Draft_6455 extends Draft {
 	 */
 	private void translateSingleFrameCheckLengthLimit(long length) throws LimitExceededException {
 		if( length > Integer.MAX_VALUE ) {
-			log.trace("Limit exedeed: Payloadsize is to big...");
+			System.out.printf("Limit exedeed: Payloadsize is to big...\n");
 			throw new LimitExceededException("Payloadsize is to big...");
 		}
 		if( length > maxFrameSize) {
@@ -569,7 +569,7 @@ public class Draft_6455 extends Draft {
 			throw new LimitExceededException( "Payload limit reached.", maxFrameSize );
 		}
 		if( length < 0 ) {
-			log.trace("Limit underflow: Payloadsize is to little...");
+			System.out.printf("Limit underflow: Payloadsize is to little...\n");
 			throw new LimitExceededException("Payloadsize is to little...");
 		}
 	}
@@ -964,7 +964,7 @@ public class Draft_6455 extends Draft {
 		long totalSize = getByteBufferListSize();
 		if( totalSize > maxFrameSize ) {
 			clearBufferList();
-			log.trace("Payload limit reached. Allowed: {} Current: {}", maxFrameSize, totalSize);
+			System.out.printf("Payload limit reached. Allowed: {} Current: {}\n", maxFrameSize, totalSize);
 			throw new LimitExceededException(maxFrameSize);
 		}
 	}

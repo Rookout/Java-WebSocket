@@ -113,12 +113,12 @@ public abstract class AbstractWebSocket extends WebSocketAdapter {
         synchronized (syncConnectionLost) {
             this.connectionLostTimeout = TimeUnit.SECONDS.toNanos(connectionLostTimeout);
             if (this.connectionLostTimeout <= 0) {
-                log.trace("Connection lost timer stopped");
+                System.out.printf("Connection lost timer stopped\n");
                 cancelConnectionLostTimer();
                 return;
             }
             if (this.websocketRunning) {
-                log.trace("Connection lost timer restarted");
+                System.out.printf("Connection lost timer restarted\n");
                 //Reset all the pings
                 try {
                     ArrayList<WebSocket> connections = new ArrayList<WebSocket>(getConnections());
@@ -145,7 +145,7 @@ public abstract class AbstractWebSocket extends WebSocketAdapter {
         synchronized (syncConnectionLost) {
             if (connectionLostCheckerService != null || connectionLostCheckerFuture != null) {
                 this.websocketRunning = false;
-                log.trace("Connection lost timer stopped");
+                System.out.printf("Connection lost timer stopped\n");
                 cancelConnectionLostTimer();
             }
         }
@@ -157,10 +157,10 @@ public abstract class AbstractWebSocket extends WebSocketAdapter {
     protected void startConnectionLostTimer() {
         synchronized (syncConnectionLost) {
             if (this.connectionLostTimeout <= 0) {
-                log.trace("Connection lost timer deactivated");
+                System.out.printf("Connection lost timer deactivated\n");
                 return;
             }
-            log.trace("Connection lost timer started");
+            System.out.printf("Connection lost timer started\n");
             this.websocketRunning = true;
             restartConnectionLostTimer();
         }
@@ -209,7 +209,7 @@ public abstract class AbstractWebSocket extends WebSocketAdapter {
 		}
 		WebSocketImpl webSocketImpl = (WebSocketImpl) webSocket;
 		if( webSocketImpl.getLastPong() < minimumPongTime ) {
-			log.trace("Closing connection due to no pong received: {}", webSocketImpl);
+			System.out.printf("Closing connection due to no pong received: {}\n", webSocketImpl);
 			webSocketImpl.closeConnection( CloseFrame.ABNORMAL_CLOSE, "The connection was closed because the other endpoint did not respond with a pong in time. For more information check: https://github.com/TooTallNate/Java-WebSocket/wiki/Lost-connection-detection" );
 		} else {
 			if( webSocketImpl.isOpen() ) {
@@ -219,7 +219,7 @@ public abstract class AbstractWebSocket extends WebSocketAdapter {
 					return;
 				}
 			} else {
-				log.trace("Trying to ping a non open connection: {}", webSocketImpl);
+				System.out.printf("Trying to ping a non open connection: {}\n", webSocketImpl);
 			}
 		}
 	}
