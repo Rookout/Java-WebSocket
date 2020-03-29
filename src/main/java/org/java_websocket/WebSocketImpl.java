@@ -727,7 +727,7 @@ public class WebSocketImpl implements WebSocket {
 
 	private void write( ByteBuffer buf ) throws InterruptedException {
 		log.trace( "write({}): {}", buf.remaining(), buf.remaining() > 1000 ? "too big to display" : new String( buf.array() ));
-		System.out.println("Out queue capacity: " + outQueue.remainingCapacity());
+//		System.out.println("Out queue capacity: " + outQueue.remainingCapacity());
 
 		outQueue.put( buf );
 		wsl.onWriteDemand( this );
