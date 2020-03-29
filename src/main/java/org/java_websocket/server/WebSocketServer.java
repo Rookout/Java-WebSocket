@@ -551,7 +551,7 @@ public abstract class WebSocketServer extends AbstractWebSocket implements Runna
 			try {
 				selector.close();
 			} catch ( IOException e ) {
-				log.error( "IOException during selector.close", e );
+				//log.error( "IOException during selector.close", e );
 				onError( null, e );
 			}
 		}
@@ -559,7 +559,7 @@ public abstract class WebSocketServer extends AbstractWebSocket implements Runna
 			try {
 				server.close();
 			} catch ( IOException e ) {
-				log.error( "IOException during server.close", e );
+				//log.error( "IOException during server.close", e );
 				onError( null, e );
 			}
 		}
@@ -615,13 +615,13 @@ public abstract class WebSocketServer extends AbstractWebSocket implements Runna
 				} catch ( IOException e ) {
 					// there is nothing that must be done here
 				}
-				log.trace("Connection closed because of exception",ex);
+				//log.trace("Connection closed because of exception",ex);
 			}
 		}
 	}
 
 	private void handleFatal( WebSocket conn, Exception e ) {
-		log.error( "Shutdown due to fatal error", e );
+		//log.error( "Shutdown due to fatal error", e );
 		onError( conn, e );
 		//Shutting down WebSocketWorkers, see #222
 		if( decoders != null ) {
@@ -635,11 +635,11 @@ public abstract class WebSocketServer extends AbstractWebSocket implements Runna
 		try {
 			stop();
 		} catch ( IOException e1 ) {
-			log.error( "Error during shutdown", e1 );
+			//log.error( "Error during shutdown", e1 );
 			onError( null, e1 );
 		} catch ( InterruptedException e1 ) {
 			Thread.currentThread().interrupt();
-			log.error( "Interrupt during stop", e );
+			//log.error( "Interrupt during stop", e );
 			onError( null, e1 );
 		}
 	}
@@ -694,7 +694,7 @@ public abstract class WebSocketServer extends AbstractWebSocket implements Runna
 				removed = this.connections.remove( ws );
 			} else {
 				//Don't throw an assert error if the ws is not in the list. e.g. when the other endpoint did not send any handshake. see #512
-				log.trace("Removing connection which is not in the connections collection! Possible no handshake recieved! {}", ws);
+				//log.trace("Removing connection which is not in the connections collection! Possible no handshake recieved! {}", ws);
 			}
 		}
 		if( isclosed.get() && connections.isEmpty() ) {
@@ -986,7 +986,7 @@ public abstract class WebSocketServer extends AbstractWebSocket implements Runna
 			setUncaughtExceptionHandler( new UncaughtExceptionHandler() {
 				@Override
 				public void uncaughtException( Thread t, Throwable e ) {
-					log.error("Uncaught exception in thread {}: {}", t.getName(), e);
+					//log.error("Uncaught exception in thread {}: {}", t.getName(), e);
 				}
 			} );
 		}
@@ -1024,7 +1024,7 @@ public abstract class WebSocketServer extends AbstractWebSocket implements Runna
 			try {
 				ws.decode( buf );
 			} catch(Exception e){
-				log.error("Error while reading from remote connection", e);
+				//log.error("Error while reading from remote connection", e);
 			}
 			finally {
 				pushBuffer( buf );

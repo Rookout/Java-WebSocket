@@ -140,7 +140,7 @@ public class SSLSocketChannel implements WrappedByteChannel, ByteChannel, ISSLCh
 			try {
 				socketChannel.close();
 			} catch ( IOException e ) {
-				log.error("Exception during the closing of the channel", e);
+				//log.error("Exception during the closing of the channel", e);
 			}
 		}
 	}
@@ -168,7 +168,7 @@ public class SSLSocketChannel implements WrappedByteChannel, ByteChannel, ISSLCh
 				try {
 					result = engine.unwrap( peerNetData, peerAppData );
 				} catch ( SSLException e ) {
-					log.error("SSLExcpetion during unwrap", e);
+					//log.error("SSLExcpetion during unwrap", e);
 					throw e;
 				}
 				switch(result.getStatus()) {
@@ -474,7 +474,7 @@ public class SSLSocketChannel implements WrappedByteChannel, ByteChannel, ISSLCh
 		try {
 			engine.closeInbound();
 		} catch ( Exception e ) {
-			log.error( "This engine was forced to close inbound, without having received the proper SSL/TLS close notification message from the peer, due to end of stream." );
+			//log.error( "This engine was forced to close inbound, without having received the proper SSL/TLS close notification message from the peer, due to end of stream." );
 		}
 		closeConnection();
 	}
