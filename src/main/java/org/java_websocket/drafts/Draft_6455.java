@@ -35,11 +35,6 @@ import org.java_websocket.protocols.IProtocol;
 import org.java_websocket.protocols.Protocol;
 import org.java_websocket.util.*;
 import org.java_websocket.util.Base64;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.slf4j.helpers.NOPLogger;
-import org.slf4j.helpers.NOPLoggerFactory;
-
 import java.math.BigInteger;
 import java.nio.ByteBuffer;
 import java.security.MessageDigest;
@@ -82,13 +77,6 @@ public class Draft_6455 extends Draft {
 	 * Handshake specific field for the connection
 	 */
 	private static final String CONNECTION = "Connection";
-
-	/**
-	 * Logger instance
-	 *
-	 * @since 1.4.0
-	 */
-	private final Logger log = NOPLogger.NOP_LOGGER;
 
 	/**
 	 * Attribute for the used extension in this draft
@@ -508,8 +496,6 @@ public class Draft_6455 extends Draft {
 		frame.setPayload( payload );
 		getExtension().isFrameValid(frame);
 		getExtension().decodeFrame(frame);
-		if (log.isTraceEnabled())
-			//log.trace( "afterDecoding({}): {}", frame.getPayloadData().remaining(), ( frame.getPayloadData().remaining() > 1000 ? "too big to display" : new String( frame.getPayloadData().array() ) ) );
 		frame.isValid();
 		return frame;
 	}

@@ -27,10 +27,6 @@ package org.java_websocket;
 
 import org.java_websocket.interfaces.ISSLChannel;
 import org.java_websocket.util.ByteBufferUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.slf4j.helpers.NOPLogger;
-
 import javax.net.ssl.SSLEngine;
 import javax.net.ssl.SSLEngineResult;
 import javax.net.ssl.SSLEngineResult.HandshakeStatus;
@@ -65,14 +61,6 @@ import java.util.concurrent.ExecutorService;
  *         Permission for usage recieved at May 25, 2017 by Alex Karnezis
  */
 public class SSLSocketChannel implements WrappedByteChannel, ByteChannel, ISSLChannel {
-
-	/**
-	 * Logger instance
-	 *
-	 * @since 1.4.0
-	 */
-	private final Logger log = NOPLogger.NOP_LOGGER;
-
 	/**
 	 * The underlying socket channel
 	 */

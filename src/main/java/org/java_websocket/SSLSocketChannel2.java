@@ -25,10 +25,6 @@
 package org.java_websocket;
 
 import org.java_websocket.interfaces.ISSLChannel;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.slf4j.helpers.NOPLogger;
-
 import javax.net.ssl.SSLEngine;
 import javax.net.ssl.SSLEngineResult;
 import javax.net.ssl.SSLEngineResult.HandshakeStatus;
@@ -60,13 +56,6 @@ public class SSLSocketChannel2 implements ByteChannel, WrappedByteChannel, ISSLC
      * This object is used to feed the {@link SSLEngine}'s wrap and unwrap methods during the handshake phase.
      **/
     protected static ByteBuffer emptybuffer = ByteBuffer.allocate( 0 );
-
-    /**
-     * Logger instance
-     *
-     * @since 1.4.0
-     */
-    private final Logger log = NOPLogger.NOP_LOGGER;
 
     protected ExecutorService exec;
 
@@ -232,14 +221,8 @@ public class SSLSocketChannel2 implements ByteChannel, WrappedByteChannel, ISSLC
             if( inCrypt.capacity() != netBufferMax )
                 inCrypt = ByteBuffer.allocate( netBufferMax );
         }
-        if (inData.remaining() != 0 && log.isTraceEnabled()) {
-            //log.trace(new String( inData.array(), inData.position(), inData.remaining()));
-        }
         inData.rewind();
         inData.flip();
-        if (inCrypt.remaining() != 0 && log.isTraceEnabled()) {
-            //log.trace(new String( inCrypt.array(), inCrypt.position(), inCrypt.remaining()));
-        }
         inCrypt.rewind();
         inCrypt.flip();
         outCrypt.rewind();

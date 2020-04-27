@@ -48,11 +48,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.slf4j.helpers.NOPLogger;
-
 import javax.net.ssl.SSLSession;
 
 /**
@@ -80,13 +75,6 @@ public class WebSocketImpl implements WebSocket {
 	 * Initial buffer size
 	 */
 	public static final int RCVBUF = 16384;
-
-	/**
-	 * Logger instance
-	 *
-	 * @since 1.4.0
-	 */
-	private final Logger log = NOPLogger.NOP_LOGGER;
 
 	/**
 	 * Queue of buffers that need to be sent to the client.

@@ -52,9 +52,6 @@ import org.java_websocket.framing.CloseFrame;
 import org.java_websocket.framing.Framedata;
 import org.java_websocket.handshake.ClientHandshake;
 import org.java_websocket.handshake.Handshakedata;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.slf4j.helpers.NOPLogger;
 
 /**
  * <tt>WebSocketServer</tt> is an abstract class that only takes care of the
@@ -65,13 +62,6 @@ import org.slf4j.helpers.NOPLogger;
 public abstract class WebSocketServer extends AbstractWebSocket implements Runnable {
 
 	private static final int AVAILABLE_PROCESSORS = Runtime.getRuntime().availableProcessors();
-
-	/**
-	 * Logger instance
-	 *
-	 * @since 1.4.0
-	 */
-	private final Logger log = NOPLogger.NOP_LOGGER;
 
 	/**
 	 * Holds the list of active WebSocket connections. "Active" means WebSocket
