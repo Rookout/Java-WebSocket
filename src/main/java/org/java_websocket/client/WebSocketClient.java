@@ -485,6 +485,9 @@ public abstract class WebSocketClient extends AbstractWebSocket implements Runna
 				throw new IOException();
 			}
 
+			((SSLSocket)socket).setEnabledCipherSuites(new String[]{"TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA", "TLS_RSA_WITH_AES_256_CBC_SHA" });
+			((SSLSocket)socket).setEnabledProtocols(new String[] { "TLSv1.2" });
+
 			socket.setTcpNoDelay( isTcpNoDelay() );
 			socket.setReuseAddress( isReuseAddr() );
 
