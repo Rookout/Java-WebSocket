@@ -44,7 +44,6 @@ import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import org.java_websocket.*;
 import org.rookout.java_websocket.drafts.Draft;
 import org.rookout.java_websocket.exceptions.WebsocketNotConnectedException;
 import org.rookout.java_websocket.exceptions.WrappedIOException;

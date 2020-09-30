@@ -39,7 +39,6 @@ import org.rookout.java_websocket.enums.Role;
 import org.rookout.java_websocket.exceptions.IncompleteHandshakeException;
 import org.rookout.java_websocket.exceptions.InvalidDataException;
 import org.rookout.java_websocket.exceptions.InvalidHandshakeException;
-import org.java_websocket.framing.*;
 import org.rookout.java_websocket.framing.*;
 import org.rookout.java_websocket.handshake.ClientHandshake;
 import org.rookout.java_websocket.handshake.ClientHandshakeBuilder;

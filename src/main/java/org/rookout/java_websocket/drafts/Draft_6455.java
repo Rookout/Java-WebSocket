@@ -26,11 +26,6 @@
 package org.rookout.java_websocket.drafts;
 
 import org.rookout.java_websocket.WebSocketImpl;
-import org.java_websocket.enums.*;
-import org.java_websocket.exceptions.*;
-import org.java_websocket.extensions.*;
-import org.java_websocket.framing.*;
-import org.java_websocket.handshake.*;
 import org.rookout.java_websocket.exceptions.*;
 import org.rookout.java_websocket.extensions.DefaultExtension;
 import org.rookout.java_websocket.extensions.IExtension;
@@ -38,7 +33,6 @@ import org.rookout.java_websocket.framing.*;
 import org.rookout.java_websocket.handshake.*;
 import org.rookout.java_websocket.protocols.IProtocol;
 import org.rookout.java_websocket.protocols.Protocol;
-import org.java_websocket.util.*;
 import org.rookout.java_websocket.util.Base64;
 import org.rookout.java_websocket.enums.*;
 import org.rookout.java_websocket.util.Charsetfunctions;

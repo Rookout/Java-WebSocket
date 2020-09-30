@@ -31,12 +31,9 @@ import org.rookout.java_websocket.handshake.*;
 import org.rookout.java_websocket.interfaces.ISSLChannel;
 import org.rookout.java_websocket.drafts.Draft;
 import org.rookout.java_websocket.drafts.Draft_6455;
-import org.java_websocket.enums.*;
-import org.java_websocket.exceptions.*;
 import org.rookout.java_websocket.framing.CloseFrame;
 import org.rookout.java_websocket.framing.Framedata;
 import org.rookout.java_websocket.framing.PingFrame;
-import org.java_websocket.handshake.*;
 import org.rookout.java_websocket.server.WebSocketServer.WebSocketWorker;
 import org.rookout.java_websocket.util.Charsetfunctions;
 
