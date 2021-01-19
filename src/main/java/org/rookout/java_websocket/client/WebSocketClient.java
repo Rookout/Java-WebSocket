@@ -769,6 +769,7 @@ public abstract class WebSocketClient extends AbstractWebSocket implements Runna
 			} finally {
 				closeSocket();
 				writeThread = null;
+				//NOTE::BK I believe there is a bug in this flow. engine.close() should also be called
 			}
 		}
 
@@ -847,7 +848,7 @@ public abstract class WebSocketClient extends AbstractWebSocket implements Runna
 
 	@Override
 	public boolean isOpen() {
-		return engine.isOpen();
+		return (socket != null && !socket.isClosed()) && engine.isOpen();
 	}
 
 	@Override
